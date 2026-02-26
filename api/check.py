@@ -22,9 +22,7 @@ class handler(BaseHTTPRequestHandler):
     def do_GET(self):
         is_online = check_online()
         if is_online is True:
-            send_telegram("🟢 conectado")
-        elif is_online is False:
-            send_telegram("🔴 desconectado")
+            send_telegram("🟢 active")
         self.send_response(200)
         self.end_headers()
         self.wfile.write(b"ok")
