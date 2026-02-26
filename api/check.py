@@ -1,5 +1,5 @@
 import requests
-import os
+from http.server import BaseHTTPRequestHandler
 
 TELEGRAM_TOKEN = "8781910142:AAF-rPBKEhKkZHVCTQXEqTv2fVygkq71xW8"
 CHAT_ID = "6151769961"
@@ -18,10 +18,13 @@ def send_telegram(message):
     url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
     requests.post(url, data={"chat_id": CHAT_ID, "text": message})
 
-def handler(request):
-    is_online = check_online()
-    if is_online is True:
-        send_telegram("🟢 conectado")
-    elif is_online is False:
-        send_telegram("🔴 desconectado")
-    return {"statusCode": 200, "body": "ok"}
+class handler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        is_online = check_online()
+        if is_online is True:
+            send_telegram("🟢 conectado")
+        elif is_online is False:
+            send_telegram("🔴 desconectado")
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"ok")
