@@ -37,12 +37,18 @@ class handler(BaseHTTPRequestHandler):
         is_online = check_online()
         was_online = get_state()
 
+        print(f"IMVU status: {is_online} | Estado guardado: {was_online}")
+
         if is_online is True and not was_online:
+            print("-> Cambio: offline a online, enviando notificacion")
             send_telegram("🟢 Active")
             save_state(True)
         elif is_online is False and was_online:
+            print("-> Cambio: online a offline, enviando notificacion")
             send_telegram("🔴 Inactive")
             save_state(False)
+        else:
+            print("-> Sin cambio de estado")
 
         self.send_response(200)
         self.end_headers()
