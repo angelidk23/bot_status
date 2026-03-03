@@ -1,55 +1,41 @@
 import requests
-from http.server import BaseHTTPRequestHandler
 
-TELEGRAM_TOKEN = "8781910142:AAF-rPBKEhKkZHVCTQXEqTv2fVygkq71xW8"
-CHAT_ID = "6151769961"
+TELEGRAM_TOKEN = "TU_TOKEN"
+CHAT_ID = "TU_CHAT_ID"
 IMVU_USER_ID = "384994072"
-JSONBIN_API_KEY = "$2a$10$LmYGxXIvdMcCrRbvxrzjsOsEmYdCL5inoTQRwUneaW3ueMrZU36qG"
-JSONBIN_BIN_ID = "69a0b62943b1c97be9a17678"
 
 def check_online():
-    try:
-        url = f"https://api.imvu.com/presence/presence-{IMVU_USER_ID}"
-        r = requests.get(url, timeout=10)
-        data = r.json()
-        return data["denormalized"][url]["data"]["online"]
-    except:
-        return None
+    url = f"https://api.imvu.com/presence/presence-{IMVU_USER_ID}"
+    r = requests.get(url, timeout=10)
+    data = r.json()
+    return data["denormalized"][url]["data"]["online"]
 
 def send_telegram(message):
     url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
-    requests.post(url, data={"chat_id": CHAT_ID, "text": message})
-
-def get_state():
-    url = f"https://api.jsonbin.io/v3/b/{JSONBIN_BIN_ID}/latest"
-    r = requests.get(url, headers={"X-Master-Key": JSONBIN_API_KEY})
-    return r.json()["record"]["online"]
-
-def save_state(state):
-    url = f"https://api.jsonbin.io/v3/b/{JSONBIN_BIN_ID}"
-    requests.put(url, json={"online": state}, headers={
-        "X-Master-Key": JSONBIN_API_KEY,
-        "Content-Type": "application/json"
+    r = requests.post(url, data={
+        "chat_id": CHAT_ID,
+        "text": message
     })
+    print("Telegram response:", r.text)
 
-class handler(BaseHTTPRequestHandler):
-    def do_GET(self):
+def handler(request):
+    try:
         is_online = check_online()
-        was_online = get_state()
+        print("Estado IMVU:", is_online)
 
-        print(f"IMVU status: {is_online} | Estado guardado: {was_online}")
-
-        if is_online is True and not was_online:
-            print("-> Cambio: offline a online, enviando notificacion")
+        if is_online:
             send_telegram("🟢 Active")
-            save_state(True)
-        elif is_online is False and was_online:
-            print("-> Cambio: online a offline, enviando notificacion")
-            send_telegram("🔴 Inactive")
-            save_state(False)
         else:
-            print("-> Sin cambio de estado")
+            send_telegram("🔴 Inactive")
 
-        self.send_response(200)
-        self.end_headers()
-        self.wfile.write(b"ok")
+        return {
+            "statusCode": 200,
+            "body": "ok"
+        }
+
+    except Exception as e:
+        print("Error:", e)
+        return {
+            "statusCode": 500,
+            "body": "error"
+        }
