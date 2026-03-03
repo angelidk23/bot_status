@@ -4,7 +4,7 @@ from http.server import BaseHTTPRequestHandler
 
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
 CHAT_ID = os.environ.get("CHAT_ID")
-IMVU_USER_ID = "384994072"
+IMVU_USER_ID = "383778338"
 JSONBIN_API_KEY = "$2a$10$LmYGxXIvdMcCrRbvxrzjsOsEmYdCL5inoTQRwUneaW3ueMrZU36qG"
 JSONBIN_BIN_ID = "69a0b62943b1c97be9a17678"
 
