@@ -10,7 +10,12 @@ JSONBIN_BIN_ID = "69a0b62943b1c97be9a17678"
 def check_online():
     try:
         url = f"https://api.imvu.com/presence/presence-{IMVU_USER_ID}"
-        r = requests.get(url, timeout=10)
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36",
+            "Accept": "application/json",
+            "Cookie": "osCsid=24d982de49a25efd352d6904c10e885a"
+        }
+        r = requests.get(url, headers=headers, timeout=10)
         data = r.json()
         return data["denormalized"][url]["data"]["online"]
     except:
