@@ -3,7 +3,7 @@ from http.server import BaseHTTPRequestHandler
 
 TELEGRAM_TOKEN = "8781910142:AAF-rPBKEhKkZHVCTQXEqTv2fVygkq71xW8"
 CHAT_ID = "6151769961"
-IMVU_USER_ID = "389064572"
+IMVU_USER_ID = "384994072"
 
 def check_online():
     try:
